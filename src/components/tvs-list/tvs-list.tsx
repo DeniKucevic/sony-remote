@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { NetworkInterface } from "@awesome-cordova-plugins/network-interface";
-import { scanForTv } from "../../services";
+import { scanForTv, TvResponse } from "../../services";
 import { searchOutline } from "ionicons/icons";
 import {
   IonList,
@@ -11,52 +11,6 @@ import {
   IonCheckbox,
 } from "@ionic/react";
 import { TvInfoContext, TvInfoContextType } from "../../context";
-
-type fu = {
-  status: "fulfilled" | "rejected";
-
-  value: {
-    data: {
-      result: [
-        {
-          productCategory: string;
-          productName: string;
-          modelName: string;
-          serverName: string;
-          interfaceVersion: string;
-        }
-      ];
-      id: number;
-    };
-    status: number;
-    statusText: string;
-    headers: {
-      "content-length": string;
-      "content-type": string;
-    };
-    config: {
-      transitional: {
-        silentJSONParsing: boolean;
-        forcedJSONParsing: boolean;
-        clarifyTimeoutError: boolean;
-      };
-      adapter: string[];
-      transformRequest: [null];
-      transformResponse: [null];
-      timeout: number;
-      xsrfCookieName: string;
-      xsrfHeaderName: string;
-      maxContentLength: number;
-      maxBodyLength: number;
-      env: {};
-      headers: {};
-      method: string;
-      url: string;
-      data: string;
-    };
-    request: {};
-  };
-};
 
 export const TVsList = () => {
   const { tvInfo, setTvInfo } = useContext(TvInfoContext) as TvInfoContextType;
@@ -90,7 +44,7 @@ export const TVsList = () => {
 
   return (
     <IonList>
-      {tvsList.map((tv: fu) => (
+      {tvsList.map((tv: TvResponse) => (
         <IonItem key={tv.value.data.id}>
           <IonCheckbox
             value={tv.value.data.id}
