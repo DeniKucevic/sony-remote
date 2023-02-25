@@ -1,16 +1,18 @@
 import Axios from "axios";
-const BASE_URL = "http://192.168.1.35/sony/ircc";
 
 export type IRCCCodesType = keyof typeof IRCCCodes;
 
-Axios.defaults.headers.post = {
-  Accept: "*/*",
-  "Content-Type": "text/xml; charset=UTF-8",
-  SOAPACTION: '"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC"',
-  "X-Auth-PSK": "1234",
-};
-
-export const sendIRCCCommand = (code: keyof typeof IRCCCodes) => {
+export const sendIRCCCommand = (
+  code: keyof typeof IRCCCodes,
+  ip: string,
+  auth: string
+) => {
+  Axios.defaults.headers.post = {
+    Accept: "*/*",
+    "Content-Type": "text/xml; charset=UTF-8",
+    SOAPACTION: '"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC"',
+    "X-Auth-PSK": auth,
+  };
   let body = `<?xml version="1.0"?>
   <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
       <s:Body>
@@ -20,13 +22,7 @@ export const sendIRCCCommand = (code: keyof typeof IRCCCodes) => {
       </s:Body>
   </s:Envelope>`;
 
-  Axios.post(BASE_URL, body)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  Axios.post(ip + "/ircc", body);
 };
 
 const IRCCCodes = {

@@ -7,11 +7,14 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { addOutline, removeOutline, volumeMuteOutline } from "ionicons/icons";
+import { useContext } from "react";
+import { TvInfoContext, TvInfoContextType } from "../../context";
 import { IRCCCodesType, sendIRCCCommand } from "../../services";
 
 export const VolumeAndChannelControl = () => {
+  const { tvInfo } = useContext(TvInfoContext) as TvInfoContextType;
   const handleCommand = (command: IRCCCodesType) => {
-    sendIRCCCommand(command);
+    sendIRCCCommand(command, tvInfo.tvUrl, tvInfo.auth);
   };
 
   return (

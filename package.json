@@ -3,9 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@awesome-cordova-plugins/core": "6.2.0",
+    "@awesome-cordova-plugins/network-interface": "^6.3.0",
+    "@awesome-cordova-plugins/zeroconf": "6.2.0",
+    "@capacitor/android": "4.5.0",
     "@capacitor/app": "4.1.1",
     "@capacitor/core": "4.5.0",
     "@capacitor/haptics": "4.1.0",
+    "@capacitor/ios": "4.5.0",
     "@capacitor/keyboard": "4.1.0",
     "@capacitor/status-bar": "4.1.0",
     "@ionic/react": "^6.0.0",
@@ -20,6 +25,8 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "axios": "^1.2.0",
+    "capacitor-zeroconf": "^1.1.0",
+    "cordova-plugin-networkinterface": "^2.2.0",
     "history": "^4.9.0",
     "ionicons": "^6.0.3",
     "react": "^18.2.0",
@@ -67,7 +74,9 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "4.5.0"
+    "@capacitor/cli": "4.5.0",
+    "@ionic/cli": "6.20.4",
+    "cordova-res": "0.15.4"
   },
   "description": "An Ionic project"
 }

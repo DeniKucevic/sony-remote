@@ -1,13 +1,43 @@
 import Axios from "axios";
-const BASE_URL = "http://192.168.1.35/sony/avContent";
 
-Axios.defaults.headers.common["X-Auth-PSK"] = "1234";
+export const getAvContentList = async (ip: string, auth: string) => {
+  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
-export const getAvContentList = () => {
-  Axios.post(BASE_URL, {
+  const results = await Axios.post(ip + "/avContent", {
     method: "getSourceList",
     id: 1,
     params: [{ scheme: "extInput" }],
     version: "1.0",
-  }).then((response) => console.log(response));
+  });
+  return results;
+};
+
+export const getContentList = async (ip: string, auth: string) => {
+  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
+
+  const results = await Axios.post(ip + "/avContent", {
+    method: "getContentList",
+    id: 88,
+    params: [
+      {
+        stIdx: 0,
+        cnt: 50,
+        uri: "extInput:hdmi",
+      },
+    ],
+    version: "1.5",
+  });
+  return results;
+};
+
+export const setActiveInput = async (uri: string, ip: string, auth: string) => {
+  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
+
+  const results = await Axios.post(ip + "/avContent", {
+    method: "setPlayContent",
+    id: 101,
+    params: [{ uri }],
+    version: "1.0",
+  });
+  return results;
 };
