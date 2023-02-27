@@ -11,7 +11,11 @@ import {
   IonFooter,
   IonIcon,
 } from "@ionic/react";
-import { informationCircleOutline, tvOutline } from "ionicons/icons";
+import {
+  helpOutline,
+  informationCircleOutline,
+  tvOutline,
+} from "ionicons/icons";
 import { AppsList } from "../apps-list";
 import { InputsList } from "../inputs-list";
 import { TVsList } from "../tvs-list";
@@ -53,6 +57,10 @@ export const Menu = () => {
         </IonAccordionGroup>
       </IonContent>
       <IonFooter className="ion-padding">
+        <IonItem button routerLink="/how-to">
+          <IonIcon slot="start" icon={helpOutline} />
+          How to use app
+        </IonItem>
         <IonItem button routerLink="/remote">
           <IonIcon slot="start" icon={tvOutline} />
           Remote

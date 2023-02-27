@@ -29,6 +29,7 @@ import "./theme/variables.css";
 import { About } from "./pages/about/about";
 import { Menu } from "./components";
 import { TvInfoProvider } from "./context";
+import { HowTo } from "./pages/how-to";
 
 setupIonicReact();
 
@@ -44,6 +45,9 @@ const App: React.FC = () => (
             </Route>
             <Route exact path="/about">
               <About />
+            </Route>
+            <Route exact path="/how-to">
+              <HowTo />
             </Route>
             <Route exact path="/">
               <Redirect to="/remote" />
