@@ -15,16 +15,14 @@ import { Wifi } from "@capacitor-community/wifi";
 export const TVsList = () => {
   const { tvInfo, setTvInfo } = useContext(TvInfoContext) as TvInfoContextType;
   const [checked, setChecked] = useState<number | null>(null);
-  const [ip, setIp] = useState({});
 
   const [tvsList, setTvsList] = useState<any>([]);
   const [auth, setAuth] = useState(tvInfo.auth);
 
   useEffect(() => {
-    Wifi.getIP().then((res) => {
-      setIp(res);
-      scanForTv(res.ip as string).then((res) => setTvsList(res));
-    });
+    Wifi.getIP().then((res) =>
+      scanForTv(res.ip as string).then((res) => setTvsList(res))
+    );
   }, []);
 
   useEffect(() => {
@@ -46,7 +44,6 @@ export const TVsList = () => {
 
   return (
     <IonList>
-      {JSON.stringify(ip)}
       {tvsList.map((tv: TvResponse) => (
         <IonItem key={tv.value.data.id}>
           <IonCheckbox
