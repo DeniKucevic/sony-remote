@@ -31,7 +31,7 @@ export const Remote: React.FC = () => {
   };
 
   return (
-    <IonPage id="main-content">
+    <IonPage id="main">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

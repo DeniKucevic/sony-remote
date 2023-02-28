@@ -3,19 +3,17 @@ import {
   IonCard,
   IonCardContent,
   IonCardHeader,
-  IonCardTitle,
   IonContent,
   IonHeader,
   IonMenuButton,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 
 export const HowTo = () => {
   return (
-    <IonPage id="main-content">
+    <IonPage id="main">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

@@ -10,6 +10,7 @@ import {
   IonLabel,
   IonFooter,
   IonIcon,
+  IonMenuToggle,
 } from "@ionic/react";
 import {
   helpOutline,
@@ -22,7 +23,7 @@ import { TVsList } from "../tvs-list";
 
 export const Menu = () => {
   return (
-    <IonMenu type="reveal" contentId="main">
+    <IonMenu type="overlay" contentId="main">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Menu</IonTitle>
@@ -57,18 +58,24 @@ export const Menu = () => {
         </IonAccordionGroup>
       </IonContent>
       <IonFooter className="ion-padding">
-        <IonItem button routerLink="/how-to">
-          <IonIcon slot="start" icon={helpOutline} />
-          How to use app
-        </IonItem>
-        <IonItem button routerLink="/remote">
-          <IonIcon slot="start" icon={tvOutline} />
-          Remote
-        </IonItem>
-        <IonItem button routerLink="/about">
-          <IonIcon slot="start" icon={informationCircleOutline} />
-          About
-        </IonItem>
+        <IonMenuToggle>
+          <IonItem button routerLink="/remote">
+            <IonIcon slot="start" icon={tvOutline} />
+            Remote
+          </IonItem>
+        </IonMenuToggle>
+        <IonMenuToggle>
+          <IonItem button routerLink="/how-to">
+            <IonIcon slot="start" icon={helpOutline} />
+            How to use app
+          </IonItem>
+        </IonMenuToggle>
+        <IonMenuToggle>
+          <IonItem button routerLink="/about">
+            <IonIcon slot="start" icon={informationCircleOutline} />
+            About
+          </IonItem>
+        </IonMenuToggle>
       </IonFooter>
     </IonMenu>
   );

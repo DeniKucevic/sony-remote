@@ -21,7 +21,7 @@ import { remote } from "../../assets";
 
 export const About = () => {
   return (
-    <IonPage id="main-content">
+    <IonPage id="main">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

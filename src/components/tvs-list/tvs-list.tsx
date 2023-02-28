@@ -10,19 +10,21 @@ import {
   IonCheckbox,
 } from "@ionic/react";
 import { TvInfoContext, TvInfoContextType } from "../../context";
-import { Wifi } from "@capacitor-community/wifi";
+import { WifiIp } from "capacitor-plugin-wifi-ip";
 
 export const TVsList = () => {
   const { tvInfo, setTvInfo } = useContext(TvInfoContext) as TvInfoContextType;
   const [checked, setChecked] = useState<number | null>(null);
+  const [ip, setIp] = useState("");
 
   const [tvsList, setTvsList] = useState<any>([]);
   const [auth, setAuth] = useState(tvInfo.auth);
 
   useEffect(() => {
-    Wifi.getIP().then((res) =>
-      scanForTv(res.ip as string).then((res) => setTvsList(res))
-    );
+    WifiIp.getIP().then((res) => {
+      setIp(res.ip ?? "");
+      scanForTv(res.ip as string).then((res) => setTvsList(res));
+    });
   }, []);
 
   useEffect(() => {
@@ -32,9 +34,10 @@ export const TVsList = () => {
 
   const handleTvScan = () => {
     setTvsList([]);
-    Wifi.getIP().then((res) =>
-      scanForTv(res.ip as string).then((res) => setTvsList(res))
-    );
+    WifiIp.getIP().then((res) => {
+      setIp(res.ip ?? "");
+      scanForTv(res.ip as string).then((res) => setTvsList(res));
+    });
   };
 
   const handleTvSelect = (url: string, auth: string, e: any) => {
@@ -73,6 +76,7 @@ export const TVsList = () => {
           onIonChange={(e) => setAuth(e.detail.value ?? "")}
         />
       </IonItem>
+      <IonItem>Phone ip: {ip}</IonItem>
     </IonList>
   );
 };

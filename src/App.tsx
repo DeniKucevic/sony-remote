@@ -31,7 +31,9 @@ import { Menu } from "./components";
 import { TvInfoProvider } from "./context";
 import { HowTo } from "./pages/how-to";
 
-setupIonicReact();
+setupIonicReact({
+  swipeBackEnabled: false,
+});
 
 const App: React.FC = () => (
   <IonApp>
