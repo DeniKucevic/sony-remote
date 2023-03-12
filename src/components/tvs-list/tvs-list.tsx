@@ -8,6 +8,7 @@ import {
   IonLabel,
   IonInput,
   IonCheckbox,
+  IonSkeletonText,
 } from "@ionic/react";
 import { TvInfoContext, TvInfoContextType } from "../../context";
 import { WifiIp } from "capacitor-plugin-wifi-ip";
@@ -16,14 +17,19 @@ export const TVsList = () => {
   const { tvInfo, setTvInfo } = useContext(TvInfoContext) as TvInfoContextType;
   const [checked, setChecked] = useState<number | null>(null);
   const [ip, setIp] = useState("");
+  const [isSearchingForTv, setIsSearchingForTv] = useState(false);
 
   const [tvsList, setTvsList] = useState<any>([]);
   const [auth, setAuth] = useState(tvInfo.auth);
 
   useEffect(() => {
+    setIsSearchingForTv(true);
     WifiIp.getIP().then((res) => {
       setIp(res.ip ?? "");
-      scanForTv(res.ip as string).then((res) => setTvsList(res));
+      scanForTv(res.ip as string).then((res) => {
+        setIsSearchingForTv(false);
+        setTvsList(res);
+      });
     });
   }, []);
 
@@ -34,9 +40,13 @@ export const TVsList = () => {
 
   const handleTvScan = () => {
     setTvsList([]);
+    setIsSearchingForTv(true);
     WifiIp.getIP().then((res) => {
       setIp(res.ip ?? "");
-      scanForTv(res.ip as string).then((res) => setTvsList(res));
+      scanForTv(res.ip as string).then((res) => {
+        setIsSearchingForTv(false);
+        setTvsList(res);
+      });
     });
   };
 
@@ -47,25 +57,29 @@ export const TVsList = () => {
 
   return (
     <IonList>
-      {tvsList.map((tv: TvResponse) => (
-        <IonItem key={tv.value.data.id}>
-          <IonCheckbox
-            value={tv.value.data.id}
-            checked={tv.value.data.id === checked}
-            onIonChange={(e) =>
-              handleTvSelect(
-                tv.value.config.url.split("/").slice(0, -1).join("/"),
-                auth,
-                e
-              )
-            }
-          />
-          <IonLabel>
-            {tv.value.data.result.map((tv: any) => tv.modelName)}
-          </IonLabel>
-        </IonItem>
-      ))}
-      <IonItem button onClick={handleTvScan}>
+      {isSearchingForTv ? (
+        <IonSkeletonText animated style={{ height: "3rem" }} />
+      ) : (
+        tvsList.map((tv: TvResponse) => (
+          <IonItem key={tv.value.data.id}>
+            <IonCheckbox
+              value={tv.value.data.id}
+              checked={tv.value.data.id === checked}
+              onIonChange={(e) =>
+                handleTvSelect(
+                  tv.value.config.url.split("/").slice(0, -1).join("/"),
+                  auth,
+                  e
+                )
+              }
+            />
+            <IonLabel>
+              {tv.value.data.result.map((tv: any) => tv.modelName)}
+            </IonLabel>
+          </IonItem>
+        ))
+      )}
+      <IonItem button onClick={handleTvScan} disabled={isSearchingForTv}>
         <IonIcon slot="start" icon={searchOutline} style={{ width: "2rem" }} />
         <IonLabel>Scan for TV</IonLabel>
       </IonItem>
