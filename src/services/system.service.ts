@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios, { AxiosResponse } from "axios";
 
 export type TvResponse = {
   status: string;
@@ -135,11 +135,11 @@ const urls = (ip: string) => {
   return result;
 };
 
-export const scanForTv = (ip: string) => {
-  const result = Promise.allSettled(
-    urls(ip).map((url) => getDeviceInfoUrl(url))
-  ).then((data) => {
-    return data.filter((x: any) => x.status === "fulfilled");
-  });
-  return result;
+export const scanForTv = async (ip: string) => {
+  const promises = urls(ip).map((url) => getDeviceInfoUrl(url));
+  const results = await Promise.allSettled(promises);
+  const successes = results
+    .filter((x) => x.status === "fulfilled")
+    .map((x) => (x as PromiseFulfilledResult<any>).value);
+  return successes;
 };

@@ -29,8 +29,12 @@ export const TVsList = () => {
       scanForTv(res.ip as string).then((res) => {
         setIsSearchingForTv(false);
         setTvsList(res);
+
+        setChecked(res[0].data.id);
+        setTvInfo({ tvUrl: prepareTvUrlFromResponse(res[0]), auth: auth });
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -46,6 +50,9 @@ export const TVsList = () => {
       scanForTv(res.ip as string).then((res) => {
         setIsSearchingForTv(false);
         setTvsList(res);
+
+        setChecked(res[0].data.id);
+        setTvInfo({ tvUrl: prepareTvUrlFromResponse(res[0]), auth: auth });
       });
     });
   };
@@ -55,27 +62,25 @@ export const TVsList = () => {
     setTvInfo({ tvUrl: url, auth: auth });
   };
 
+  const prepareTvUrlFromResponse = (tvResponse: TvResponse["value"]) => {
+    return tvResponse.config.url.split("/").slice(0, -1).join("/");
+  };
+
   return (
     <IonList>
       {isSearchingForTv ? (
         <IonSkeletonText animated style={{ height: "3rem" }} />
       ) : (
-        tvsList.map((tv: TvResponse) => (
-          <IonItem key={tv.value.data.id}>
+        tvsList.map((tv: TvResponse["value"]) => (
+          <IonItem key={tv.data.id}>
             <IonCheckbox
-              value={tv.value.data.id}
-              checked={tv.value.data.id === checked}
+              value={tv.data.id}
+              checked={tv.data.id === checked}
               onIonChange={(e) =>
-                handleTvSelect(
-                  tv.value.config.url.split("/").slice(0, -1).join("/"),
-                  auth,
-                  e
-                )
+                handleTvSelect(prepareTvUrlFromResponse(tv), auth, e)
               }
             />
-            <IonLabel>
-              {tv.value.data.result.map((tv: any) => tv.modelName)}
-            </IonLabel>
+            <IonLabel>{tv.data.result.map((tv: any) => tv.modelName)}</IonLabel>
           </IonItem>
         ))
       )}
