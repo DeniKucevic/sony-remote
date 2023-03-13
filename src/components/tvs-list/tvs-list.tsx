@@ -24,16 +24,25 @@ export const TVsList = () => {
 
   useEffect(() => {
     setIsSearchingForTv(true);
-    WifiIp.getIP().then((res) => {
-      setIp(res.ip ?? "");
-      scanForTv(res.ip as string).then((res) => {
-        setIsSearchingForTv(false);
-        setTvsList(res);
-
-        setChecked(res[0].data.id);
-        setTvInfo({ tvUrl: prepareTvUrlFromResponse(res[0]), auth: auth });
-      });
-    });
+    WifiIp.getIP()
+      .then((res) => {
+        console.log(res);
+        setIp(res.ip ?? "");
+        scanForTv(res.ip as string)
+          .then((tvs) => {
+            setIsSearchingForTv(false);
+            setTvsList(tvs);
+            if (tvs && tvs[0]) {
+              setChecked(tvs[0]?.data?.id);
+              setTvInfo({
+                tvUrl: prepareTvUrlFromResponse(tvs[0]),
+                auth: auth,
+              });
+            }
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -45,16 +54,25 @@ export const TVsList = () => {
   const handleTvScan = () => {
     setTvsList([]);
     setIsSearchingForTv(true);
-    WifiIp.getIP().then((res) => {
-      setIp(res.ip ?? "");
-      scanForTv(res.ip as string).then((res) => {
-        setIsSearchingForTv(false);
-        setTvsList(res);
+    WifiIp.getIP()
+      .then((res) => {
+        setIp(res.ip ?? "");
+        scanForTv(res.ip as string)
+          .then((tvs) => {
+            setIsSearchingForTv(false);
+            setTvsList(tvs);
 
-        setChecked(res[0].data.id);
-        setTvInfo({ tvUrl: prepareTvUrlFromResponse(res[0]), auth: auth });
-      });
-    });
+            if (tvs && tvs[0]) {
+              setChecked(tvs[0].data.id);
+              setTvInfo({
+                tvUrl: prepareTvUrlFromResponse(tvs[0]),
+                auth: auth,
+              });
+            }
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleTvSelect = (url: string, auth: string, e: any) => {

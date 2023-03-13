@@ -54,6 +54,7 @@ const App: React.FC = () => {
       adId: "ca-app-pub-9714976835323690/9096432216",
       adSize: BannerAdSize.BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
+      npa: true,
     };
     await AdMob.showBanner(options);
   };
