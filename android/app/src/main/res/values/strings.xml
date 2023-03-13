@@ -4,4 +4,5 @@
     <string name="title_activity_main">sony-remote</string>
     <string name="package_name">io.ionic.sonyremote</string>
     <string name="custom_url_scheme">io.ionic.sonyremote</string>
+    <string name="admob_app_id">ca-app-pub-9714976835323690~8033718288</string>
 </resources>

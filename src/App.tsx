@@ -7,6 +7,12 @@ import {
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Remote } from "./pages/remote/remote";
+import {
+  AdMob,
+  BannerAdOptions,
+  BannerAdPosition,
+  BannerAdSize,
+} from "@capacitor-community/admob";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -30,35 +36,56 @@ import { About } from "./pages/about/about";
 import { Menu } from "./components";
 import { TvInfoProvider } from "./context";
 import { HowTo } from "./pages/how-to";
+import { useEffect } from "react";
 
 setupIonicReact({
   swipeBackEnabled: false,
 });
 
-const App: React.FC = () => (
-  <IonApp>
-    <TvInfoProvider>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonRouterOutlet id="main">
-            <Route exact path="/remote">
-              <Remote />
-            </Route>
-            <Route exact path="/about">
-              <About />
-            </Route>
-            <Route exact path="/how-to">
-              <HowTo />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/remote" />
-            </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactRouter>
-    </TvInfoProvider>
-  </IonApp>
-);
+const App: React.FC = () => {
+  useEffect(() => {
+    AdMob.initialize({
+      requestTrackingAuthorization: true,
+    });
+  }, []);
+
+  const showBanner = async () => {
+    const options: BannerAdOptions = {
+      adId: "ca-app-pub-9714976835323690/9096432216",
+      adSize: BannerAdSize.BANNER,
+      position: BannerAdPosition.BOTTOM_CENTER,
+    };
+    await AdMob.showBanner(options);
+  };
+  useEffect(() => {
+    showBanner();
+  }, []);
+
+  return (
+    <IonApp>
+      <TvInfoProvider>
+        <IonReactRouter>
+          <IonSplitPane contentId="main" style={{ marginBottom: "100px" }}>
+            <Menu />
+            <IonRouterOutlet id="main">
+              <Route exact path="/remote">
+                <Remote />
+              </Route>
+              <Route exact path="/about">
+                <About />
+              </Route>
+              <Route exact path="/how-to">
+                <HowTo />
+              </Route>
+              <Route exact path="/">
+                <Redirect to="/remote" />
+              </Route>
+            </IonRouterOutlet>
+          </IonSplitPane>
+        </IonReactRouter>
+      </TvInfoProvider>
+    </IonApp>
+  );
+};
 
 export default App;
