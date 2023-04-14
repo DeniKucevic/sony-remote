@@ -11,18 +11,17 @@ import {
   IonFooter,
   IonIcon,
   IonMenuToggle,
-  IonImg,
   IonRouterLink,
 } from "@ionic/react";
 import {
   helpOutline,
   informationCircleOutline,
+  logoGithub,
   tvOutline,
 } from "ionicons/icons";
 import { AppsList } from "../apps-list";
 import { InputsList } from "../inputs-list";
 import { TVsList } from "../tvs-list";
-import { coffeeButton } from "../../assets";
 
 export const Menu = () => {
   return (
@@ -61,11 +60,11 @@ export const Menu = () => {
         </IonAccordionGroup>
       </IonContent>
       <IonFooter className="ion-padding">
-        <IonRouterLink
-          style={{ padding: "1rem 1rem" }}
-          href="https://www.buymeacoffee.com/denikucevic"
-        >
-          <IonImg src={coffeeButton} />
+        <IonRouterLink href="https://github.com/DeniKucevic/sony-remote">
+          <IonItem button>
+            <IonIcon slot="start" icon={logoGithub} />
+            Source-code
+          </IonItem>
         </IonRouterLink>
         <IonMenuToggle>
           <IonItem button routerLink="/remote">

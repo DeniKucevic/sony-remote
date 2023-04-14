@@ -16,7 +16,6 @@ import { WifiIp } from "capacitor-plugin-wifi-ip";
 export const TVsList = () => {
   const { tvInfo, setTvInfo } = useContext(TvInfoContext) as TvInfoContextType;
   const [checked, setChecked] = useState<number | null>(null);
-  const [ip, setIp] = useState("");
   const [isSearchingForTv, setIsSearchingForTv] = useState(false);
 
   const [tvsList, setTvsList] = useState<any>([]);
@@ -26,8 +25,6 @@ export const TVsList = () => {
     setIsSearchingForTv(true);
     WifiIp.getIP()
       .then((res) => {
-        console.log(res);
-        setIp(res.ip ?? "");
         scanForTv(res.ip as string)
           .then((tvs) => {
             setIsSearchingForTv(false);
@@ -56,7 +53,6 @@ export const TVsList = () => {
     setIsSearchingForTv(true);
     WifiIp.getIP()
       .then((res) => {
-        setIp(res.ip ?? "");
         scanForTv(res.ip as string)
           .then((tvs) => {
             setIsSearchingForTv(false);
@@ -113,7 +109,6 @@ export const TVsList = () => {
           onIonChange={(e) => setAuth(e.detail.value ?? "")}
         />
       </IonItem>
-      <IonItem>Phone ip: {ip}</IonItem>
     </IonList>
   );
 };
