@@ -3,6 +3,10 @@
 
 # Sony remote control
 
+<p align="center">
+  <img src="./src/assets/images/remote.png" width="200">
+</p>
+
 Sony remote control is a Capacitor app that can be used to control SONY - BRAVIA TVs on local network.
 App is made utilizing API documentation found here: https://pro-bravia.sony.net/develop/
 
