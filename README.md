@@ -1,6 +1,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <a href="https://www.buymeacoffee.com/denikucevic"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="20px"></a>
 
+Google Play Store: https://play.google.com/store/apps/details?id=io.ionic.sonyremote
+App Gallery: https://appgallery.huawei.com/app/C108045737
+
 # Sony remote control
 
 <p align="center">
