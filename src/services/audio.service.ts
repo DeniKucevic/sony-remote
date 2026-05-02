@@ -5,7 +5,6 @@ export const incrementVolume = async (
   ip: string,
   auth: string
 ) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
   await Axios.post(ip + "/audio", {
     method: "setAudioVolume",
     id: 98,

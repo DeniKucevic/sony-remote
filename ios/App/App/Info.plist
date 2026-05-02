@@ -52,5 +52,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Used to discover Sony BRAVIA TVs on your local network.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_androidtvremote2._tcp</string>
+		<string>_airplay._tcp</string>
+		<string>_sony-sdcpip._tcp</string>
+	</array>
 </dict>
 </plist>

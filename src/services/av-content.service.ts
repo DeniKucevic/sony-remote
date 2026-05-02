@@ -1,7 +1,6 @@
 import Axios from "axios";
 
 export const getAvContentList = async (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   const results = await Axios.post(ip + "/avContent", {
     method: "getSourceList",
@@ -13,7 +12,6 @@ export const getAvContentList = async (ip: string, auth: string) => {
 };
 
 export const getContentList = async (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   const results = await Axios.post(ip + "/avContent", {
     method: "getContentList",
@@ -31,7 +29,6 @@ export const getContentList = async (ip: string, auth: string) => {
 };
 
 export const setActiveInput = async (uri: string, ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   const results = await Axios.post(ip + "/avContent", {
     method: "setPlayContent",

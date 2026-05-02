@@ -11,11 +11,12 @@ import {
   IonIcon,
   IonImg,
   IonMenuButton,
+  IonNote,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { logoGithub, logoLinkedin } from "ionicons/icons";
+import { globeOutline, logoGithub, logoLinkedin, mailOutline } from "ionicons/icons";
 
 import { remote } from "../../assets";
 
@@ -55,27 +56,33 @@ export const About = () => {
         </IonCard>
         <IonCard style={{ borderRadius: "1rem" }}>
           <IonCardHeader>
-            <IonTitle>Contact the author:</IonTitle>
+            <IonCardTitle>Need software solutions?</IonCardTitle>
+            <IonCardSubtitle>Get in touch — I'm available for hire.</IonCardSubtitle>
           </IonCardHeader>
-          <IonCardContent className="ion-text-center">
-            <IonCardTitle>
-              <a href="mailto:denikucevic@gmail.com">denikucevic@gmail.com</a>
-            </IonCardTitle>
-            <IonCardSubtitle>---OR---</IonCardSubtitle>
-            <a
-              href="https://www.linkedin.com/in/denis-kucevic/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <IonIcon size="large" icon={logoLinkedin} />
-            </a>
-            <a
-              href="https://github.com/DeniKucevic"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <IonIcon color="dark" size="large" icon={logoGithub} />
-            </a>
+          <IonCardContent>
+            <IonNote style={{ display: "block", marginBottom: "1rem" }}>
+              I build mobile and web apps, APIs, and everything in between.
+              Check out my work and blog at{" "}
+              <a href="https://deniskucevic.com" target="_blank" rel="noreferrer">
+                deniskucevic.com
+              </a>
+            </IonNote>
+            <div style={{ display: "flex", gap: "1.5rem", alignItems: "center", flexWrap: "wrap" }}>
+              <a href="mailto:denikucevic@gmail.com" style={{ display: "flex", alignItems: "center", gap: "0.4rem", textDecoration: "none" }}>
+                <IonIcon icon={mailOutline} />
+                denikucevic@gmail.com
+              </a>
+              <a href="https://deniskucevic.com" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: "0.4rem", textDecoration: "none" }}>
+                <IonIcon icon={globeOutline} />
+                deniskucevic.com
+              </a>
+              <a href="https://www.linkedin.com/in/denis-kucevic/" target="_blank" rel="noreferrer">
+                <IonIcon size="large" icon={logoLinkedin} />
+              </a>
+              <a href="https://github.com/DeniKucevic" target="_blank" rel="noreferrer">
+                <IonIcon color="dark" size="large" icon={logoGithub} />
+              </a>
+            </div>
           </IonCardContent>
         </IonCard>
       </IonContent>

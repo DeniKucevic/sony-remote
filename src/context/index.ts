@@ -1,1 +1,1 @@
-export * from "./tvInfoContext";
+export * from './tvInfoContext';

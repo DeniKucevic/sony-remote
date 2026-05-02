@@ -7,13 +7,7 @@ export const sendIRCCCommand = (
   ip: string,
   auth: string
 ) => {
-  Axios.defaults.headers.post = {
-    Accept: "*/*",
-    "Content-Type": "text/xml; charset=UTF-8",
-    SOAPACTION: '"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC"',
-    "X-Auth-PSK": auth,
-  };
-  let body = `<?xml version="1.0"?>
+  const body = `<?xml version="1.0"?>
   <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
       <s:Body>
           <u:X_SendIRCC xmlns:u="urn:schemas-sony-com:service:IRCC:1">
@@ -22,7 +16,13 @@ export const sendIRCCCommand = (
       </s:Body>
   </s:Envelope>`;
 
-  Axios.post(ip + "/ircc", body);
+  Axios.post(ip + "/ircc", body, {
+    headers: {
+      Accept: "*/*",
+      "Content-Type": "text/xml; charset=UTF-8",
+      SOAPACTION: '"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC"',
+    },
+  });
 };
 
 const IRCCCodes = {

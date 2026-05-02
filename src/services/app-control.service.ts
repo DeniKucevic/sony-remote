@@ -1,7 +1,6 @@
 import Axios from "axios";
 
 export const getAppList = async (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   const results = await Axios.post(ip + "/appControl", {
     method: "getApplicationList",
@@ -13,7 +12,6 @@ export const getAppList = async (ip: string, auth: string) => {
 };
 
 export const setActiveApp = async (uri: string, ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   const results = await Axios.post(ip + "/appControl", {
     method: "setActiveApp",

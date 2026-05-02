@@ -16,6 +16,7 @@ def capacitor_pods
   pod 'CapacitorKeyboard', :path => '../../node_modules/@capacitor/keyboard'
   pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
   pod 'CapacitorPluginWifiIp', :path => '../../node_modules/capacitor-plugin-wifi-ip'
+  pod 'CapacitorZeroconf', :path => '../../node_modules/capacitor-zeroconf'
 end
 
 target 'App' do

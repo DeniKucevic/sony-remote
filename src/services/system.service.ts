@@ -65,7 +65,6 @@ export type ValueHeaders = {
 };
 
 export const setPowerStatus = (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   getPowerStatus(ip, auth).then((response) => {
     const currentState = response.data.result[0].status;
@@ -80,7 +79,6 @@ export const setPowerStatus = (ip: string, auth: string) => {
 };
 
 export const getPowerStatus = async (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   return await Axios.post(ip + "/system", {
     method: "getPowerStatus",
@@ -91,7 +89,6 @@ export const getPowerStatus = async (ip: string, auth: string) => {
 };
 
 export const getIRCCCodesList = (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   Axios.post(ip + "/system", {
     method: "getRemoteControllerInfo",
@@ -102,7 +99,6 @@ export const getIRCCCodesList = (ip: string, auth: string) => {
 };
 
 export const getDeviceInfo = (ip: string, auth: string) => {
-  Axios.defaults.headers.common["X-Auth-PSK"] = auth;
 
   Axios.post(ip + "/system", {
     method: "getInterfaceInformation",
@@ -112,34 +108,3 @@ export const getDeviceInfo = (ip: string, auth: string) => {
   });
 };
 
-export const getDeviceInfoUrl = (url: string) => {
-  return Axios.post(
-    url,
-    {
-      method: "getInterfaceInformation",
-      id: 33,
-      params: [],
-      version: "1.0",
-    },
-    { timeout: 3000 }
-  );
-};
-
-const urls = (ip: string) => {
-  const result = [];
-  // we send in ip (192.168.1.1) then we remove last digit for search
-  const prep_base_url = "http://" + ip.split(".").slice(0, -1).join(".") + ".";
-  for (let i = 0; i < 255; i++) {
-    result.push(prep_base_url + i + "/sony/system");
-  }
-  return result;
-};
-
-export const scanForTv = async (ip: string) => {
-  const promises = urls(ip).map((url) => getDeviceInfoUrl(url));
-  const results = await Promise.allSettled(promises);
-  const successes = results
-    .filter((x) => x.status === "fulfilled")
-    .map((x) => (x as PromiseFulfilledResult<any>).value);
-  return successes;
-};

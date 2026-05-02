@@ -25,53 +25,62 @@ export const HowTo = () => {
       <IonContent className="ion-padding">
         <IonCard style={{ borderRadius: "1rem" }}>
           <IonCardHeader>
-            <IonTitle>Setting up</IonTitle>
+            <IonTitle>Before you start</IonTitle>
           </IonCardHeader>
-          <IonCardHeader
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          ></IonCardHeader>
           <IonCardContent>
-            For security reasons authentication is required for app to work.
+            Enable remote device control on your TV:
             <br />
-            You will need to open:
-            <br />
-            <code style={{ color: "lightblue" }}>
-              [HOME] Settings &gt; Network and Internet &gt; Home network setup
-              &gt; IP control &gt; Authentication
-            </code>
-            <br />
-            and set the pre shared key.
-            <br />
-            You will also need to allow remote device control:
             <br />
             <code style={{ color: "lightblue" }}>
               [HOME] Settings &gt; Network and Internet &gt; Remote device
-              settings &gt; Control remotely &gt; Enable [Default: Enable]
+              settings &gt; Control remotely &gt; Enable
             </code>
             <br />
+            <br />
+            Make sure your phone and TV are on the same Wi-Fi network.
           </IonCardContent>
         </IonCard>
+
         <IonCard style={{ borderRadius: "1rem" }}>
           <IonCardHeader>
-            <IonTitle>Using the app</IonTitle>
+            <IonTitle>Pairing</IonTitle>
           </IonCardHeader>
-          <IonCardHeader
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          ></IonCardHeader>
           <IonCardContent>
-            Once you have pre shared key and remote control sorted out you just
-            choose "Select TV" from the list and you should be able to see your
-            tv in the list. If you don't see the TV make sure you are on the
-            same network as the TV. Select the TV and put your pre shared key in
-            the pin input.
+            1. Open the menu and tap <strong>Devices</strong>.
+            <br />
+            2. Tap <strong>+</strong> — the app scans for your TV automatically.
+            <br />
+            3. Tap your TV in the list. If it doesn't appear, tap{" "}
+            <strong>Scan entire network</strong> at the bottom.
+            <br />
+            4. On the pairing screen tap{" "}
+            <strong>Connect — show PIN on TV</strong>. A 4-digit PIN will appear
+            on your TV screen.
+            <br />
+            5. Enter the PIN in the app and tap <strong>Confirm</strong>.
+            <br />
+            <br />
+            Your TV is now saved. The app remembers it — you only need to pair
+            once.
+          </IonCardContent>
+        </IonCard>
+
+        <IonCard style={{ borderRadius: "1rem" }}>
+          <IonCardHeader>
+            <IonTitle>PIN not showing?</IonTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            Your TV may be set to Pre-Shared Key mode. Either switch it back to
+            Normal:
+            <br />
+            <code style={{ color: "lightblue" }}>
+              Settings &gt; Network and Internet &gt; Home network setup &gt; IP
+              control &gt; Authentication &gt; Normal
+            </code>
+            <br />
+            <br />
+            Or tap <strong>Use Pre-Shared Key instead</strong> on the pairing
+            screen and enter the PSK you set on the TV.
           </IonCardContent>
         </IonCard>
       </IonContent>

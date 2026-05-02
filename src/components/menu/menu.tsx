@@ -12,16 +12,16 @@ import {
   IonIcon,
   IonMenuToggle,
   IonRouterLink,
-} from "@ionic/react";
+} from '@ionic/react';
 import {
   helpOutline,
   informationCircleOutline,
   logoGithub,
   tvOutline,
-} from "ionicons/icons";
-import { AppsList } from "../apps-list";
-import { InputsList } from "../inputs-list";
-import { TVsList } from "../tvs-list";
+  phonePortraitOutline,
+} from 'ionicons/icons';
+import { AppsList } from '../apps-list';
+import { InputsList } from '../inputs-list';
 
 export const Menu = () => {
   return (
@@ -49,14 +49,6 @@ export const Menu = () => {
               <InputsList />
             </div>
           </IonAccordion>
-          <IonAccordion value="tvs">
-            <IonItem slot="header" color="light">
-              <IonLabel>Select TV</IonLabel>
-            </IonItem>
-            <div className="ion-padding" slot="content">
-              <TVsList />
-            </div>
-          </IonAccordion>
         </IonAccordionGroup>
       </IonContent>
       <IonFooter className="ion-padding">
@@ -73,6 +65,12 @@ export const Menu = () => {
           </IonItem>
         </IonMenuToggle>
         <IonMenuToggle>
+          <IonItem button routerLink="/devices">
+            <IonIcon slot="start" icon={phonePortraitOutline} />
+            Devices
+          </IonItem>
+        </IonMenuToggle>
+        <IonMenuToggle>
           <IonItem button routerLink="/how-to">
             <IonIcon slot="start" icon={helpOutline} />
             How to use app
@@ -84,6 +82,12 @@ export const Menu = () => {
             About
           </IonItem>
         </IonMenuToggle>
+        <div style={{ padding: '1rem 1rem 0.5rem', textAlign: 'center', opacity: 0.45, fontSize: '0.75rem' }}>
+          Made by{' '}
+          <a href="https://deniskucevic.com" target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>
+            Denis Kucevic
+          </a>
+        </div>
       </IonFooter>
     </IonMenu>
   );

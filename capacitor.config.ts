@@ -4,7 +4,12 @@ const config: CapacitorConfig = {
   appId: 'io.ionic.sonyremote',
   appName: 'sony-remote',
   webDir: 'build',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
+  },
 };
 
 export default config;
