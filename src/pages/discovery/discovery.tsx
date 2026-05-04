@@ -15,161 +15,81 @@ import {
   IonSpinner,
   IonButton,
 } from "@ionic/react";
-import {
-  tvOutline,
-  wifiOutline,
-  searchOutline,
-  stopCircleOutline,
-  refreshOutline,
-} from "ionicons/icons";
+import { tvOutline, wifiOutline, refreshOutline, stopCircleOutline } from "ionicons/icons";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-import {
-  DiscoveredDevice,
-  startDiscovery,
-  runSubnetScan,
-} from "../../services";
+import { DiscoveredDevice, startDiscovery } from "../../services";
 
-const TEARDOWN_DELAY_MS = 1200;
-const WATCHDOG_INTERVAL = 3000;
-const MAX_IDLE_TIME = 15000;
+const SCAN_DURATION_MS = 10000;
 
 export const Discovery: React.FC = () => {
   const [devices, setDevices] = useState<DiscoveredDevice[]>([]);
   const [scanning, setScanning] = useState(false);
-  const [subnetScanning, setSubnetScanning] = useState(false);
 
   const history = useHistory();
 
-  const stopRef = useRef<(() => void) | null>(null);
-  const scanningRef = useRef(false);
-  const knownIpsRef = useRef(new Set<string>());
-
+  const stopRef = useRef<(() => Promise<void>) | null>(null);
   const timerRef = useRef<number | null>(null);
-  const watchdogRef = useRef<number | null>(null);
-
-  const lastActivityRef = useRef(Date.now());
-  const sessionIdRef = useRef(0);
-
-  const clearTimers = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (watchdogRef.current) clearInterval(watchdogRef.current);
-
-    timerRef.current = null;
-    watchdogRef.current = null;
-  };
-
-  // 🚀 INSTANT STOP (non-blocking)
-  const stopScan = useCallback(() => {
-    scanningRef.current = false;
-    sessionIdRef.current++;
-
-    clearTimers();
-    setScanning(false);
-
-    const stop = stopRef.current;
-    stopRef.current = null;
-
-    if (stop) {
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          try {
-            stop();
-          } catch (e) {
-            console.warn("stopDiscovery failed", e);
-          }
-        }, 0);
-      });
-    }
-  }, []);
+  const knownIpsRef = useRef(new Set<string>());
+  const scanningRef = useRef(false); // guard against concurrent startScan calls
 
   const addDevice = useCallback((device: DiscoveredDevice) => {
-    if (!scanningRef.current) return;
-
-    lastActivityRef.current = Date.now();
-
     if (knownIpsRef.current.has(device.ip)) return;
-
     knownIpsRef.current.add(device.ip);
     setDevices((prev) => [...prev, device]);
   }, []);
 
-  const startScan = useCallback(() => {
-    const sessionId = ++sessionIdRef.current;
-
-    clearTimers();
-
-    if (stopRef.current) {
-      stopRef.current();
-      stopRef.current = null;
-    }
-
+  const startScan = useCallback(async () => {
+    if (scanningRef.current) return; // prevent overlapping restarts
     scanningRef.current = true;
+
+    // Stop the running session first and wait for JmDNS to fully close
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    if (stopRef.current) { await stopRef.current(); stopRef.current = null; }
+
+    knownIpsRef.current.clear();
+    setDevices([]);
     setScanning(true);
-    lastActivityRef.current = Date.now();
 
-    timerRef.current = window.setTimeout(async () => {
+    stopRef.current = startDiscovery(addDevice);
+
+    timerRef.current = window.setTimeout(() => {
+      setScanning(false);
       timerRef.current = null;
+    }, SCAN_DURATION_MS);
 
-      if (!scanningRef.current || sessionId !== sessionIdRef.current) return;
-
-      await new Promise(requestAnimationFrame);
-
-      if (!scanningRef.current || sessionId !== sessionIdRef.current) return;
-
-      stopRef.current = startDiscovery(addDevice);
-
-      // 🧠 watchdog instead of aggressive restart loop
-      watchdogRef.current = window.setInterval(() => {
-        if (!scanningRef.current || sessionId !== sessionIdRef.current) return;
-
-        const idle = Date.now() - lastActivityRef.current;
-
-        if (idle > MAX_IDLE_TIME) {
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              if (scanningRef.current) startScan();
-            }, 0);
-          });
-        }
-      }, WATCHDOG_INTERVAL);
-    }, TEARDOWN_DELAY_MS);
+    scanningRef.current = false;
   }, [addDevice]);
 
   useEffect(() => {
     startScan();
-    return stopScan;
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      stopRef.current?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelect = (device: DiscoveredDevice) => {
-    stopScan();
-
-    // ensure navigation is not blocked by anything
-    requestAnimationFrame(() => {
-      history.push(
-        `/pairing/${device.ip}?name=${encodeURIComponent(device.name)}`,
-      );
-    });
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    setScanning(false);
+    stopRef.current?.();
+    stopRef.current = null;
+    history.push(`/pairing/${device.ip}?name=${encodeURIComponent(device.name)}`);
   };
 
   const handleStop = () => {
     Haptics.impact({ style: ImpactStyle.Medium });
-    stopScan();
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    setScanning(false);
+    stopRef.current?.();
+    stopRef.current = null;
   };
 
   const handleStart = () => {
     Haptics.impact({ style: ImpactStyle.Light });
     startScan();
-  };
-
-  const handleSubnetScan = async () => {
-    setSubnetScanning(true);
-    try {
-      await runSubnetScan(addDevice);
-    } finally {
-      setSubnetScanning(false);
-    }
   };
 
   return (
@@ -180,7 +100,6 @@ export const Discovery: React.FC = () => {
             <IonBackButton defaultHref="/devices" />
           </IonButtons>
           <IonTitle>Scan for TVs</IonTitle>
-
           {scanning && (
             <IonButtons slot="end">
               <IonSpinner name="dots" style={{ marginRight: "1rem" }} />
@@ -203,7 +122,7 @@ export const Discovery: React.FC = () => {
             }}
           >
             <IonSpinner name="crescent" style={{ transform: "scale(2.5)" }} />
-            <IonLabel>Scanning for devices…</IonLabel>
+            <IonLabel>Scanning for Sony TVs…</IonLabel>
             <IonNote style={{ textAlign: "center", padding: "0 3rem" }}>
               Devices appear as they are found
             </IonNote>
@@ -223,9 +142,9 @@ export const Discovery: React.FC = () => {
             }}
           >
             <IonIcon icon={wifiOutline} style={{ fontSize: "4rem" }} />
-            <IonLabel>No devices found</IonLabel>
+            <IonLabel>No Sony TVs found</IonLabel>
             <IonNote style={{ textAlign: "center", padding: "0 3rem" }}>
-              Try a full network scan below
+              Make sure your TV is on and connected to the same Wi-Fi
             </IonNote>
           </div>
         )}
@@ -270,7 +189,7 @@ export const Discovery: React.FC = () => {
 
       <IonFooter>
         <IonToolbar>
-          <div style={{ padding: "0.5rem 1rem 0.25rem" }}>
+          <div style={{ padding: "0.5rem 1rem 0.75rem" }}>
             {scanning ? (
               <IonButton expand="block" color="danger" onClick={handleStop}>
                 <IonIcon slot="start" icon={stopCircleOutline} />
@@ -282,27 +201,6 @@ export const Discovery: React.FC = () => {
                 Scan again
               </IonButton>
             )}
-          </div>
-
-          <div style={{ padding: "0.25rem 1rem 0.5rem" }}>
-            <IonButton
-              expand="block"
-              fill="outline"
-              onClick={handleSubnetScan}
-              disabled={subnetScanning}
-            >
-              {subnetScanning ? (
-                <>
-                  <IonSpinner name="dots" style={{ marginRight: "0.5rem" }} />
-                  Scanning network…
-                </>
-              ) : (
-                <>
-                  <IonIcon slot="start" icon={searchOutline} />
-                  Scan entire network
-                </>
-              )}
-            </IonButton>
           </div>
         </IonToolbar>
       </IonFooter>

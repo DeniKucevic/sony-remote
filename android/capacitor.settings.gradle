@@ -14,8 +14,8 @@ project(':capacitor-keyboard').projectDir = new File('../node_modules/@capacitor
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
-include ':capacitor-plugin-wifi-ip'
-project(':capacitor-plugin-wifi-ip').projectDir = new File('../node_modules/capacitor-plugin-wifi-ip/android')
+include ':capacitor-udp-socket'
+project(':capacitor-udp-socket').projectDir = new File('../node_modules/capacitor-udp-socket/android')
 
 include ':capacitor-zeroconf'
 project(':capacitor-zeroconf').projectDir = new File('../node_modules/capacitor-zeroconf/android')

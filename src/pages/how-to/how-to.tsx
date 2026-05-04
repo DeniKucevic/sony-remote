@@ -51,7 +51,7 @@ export const HowTo = () => {
             2. Tap <strong>+</strong> — the app scans for your TV automatically.
             <br />
             3. Tap your TV in the list. If it doesn't appear, tap{" "}
-            <strong>Scan entire network</strong> at the bottom.
+            <strong>Scan again</strong> to retry.
             <br />
             4. On the pairing screen tap{" "}
             <strong>Connect — show PIN on TV</strong>. A 4-digit PIN will appear
