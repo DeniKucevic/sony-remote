@@ -41,7 +41,10 @@ setupIonicReact({
 });
 
 const DefaultRedirect: React.FC = () => {
-  const { activeDevice } = useContext(TvInfoContext) as TvInfoContextType;
+  const { activeDevice, hydrated } = useContext(TvInfoContext) as TvInfoContextType;
+  // Wait for persisted state to load before deciding, otherwise a paired
+  // user is briefly treated as having no device and sent to /discovery.
+  if (!hydrated) return null;
   return <Redirect to={activeDevice ? '/remote' : '/discovery'} />;
 };
 

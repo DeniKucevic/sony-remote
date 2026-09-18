@@ -1,5 +1,6 @@
 import Axios from 'axios';
-import { createContext, useState, useMemo, useCallback, useEffect } from 'react';
+import { Preferences } from '@capacitor/preferences';
+import { createContext, useState, useMemo, useCallback, useEffect, useRef } from 'react';
 
 export type SavedDevice = {
   id: string;
@@ -14,6 +15,8 @@ export type TvInfoContextType = {
   tvInfo: { tvUrl: string; auth: string };
   activeDevice: SavedDevice | null;
   savedDevices: SavedDevice[];
+  /** false until persisted state has been loaded from native storage */
+  hydrated: boolean;
   setActiveDevice: (device: SavedDevice) => void;
   saveDevice: (device: SavedDevice) => void;
   removeDevice: (id: string) => void;
@@ -25,25 +28,71 @@ const ACTIVE_KEY = 'activeDeviceId';
 export const TvInfoContext = createContext<TvInfoContextType | null>(null);
 
 export const TvInfoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [savedDevices, setSavedDevices] = useState<SavedDevice[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(DEVICES_KEY) ?? '[]');
-    } catch {
-      return [];
-    }
-  });
+  const [savedDevices, setSavedDevices] = useState<SavedDevice[]>([]);
+  const [activeDeviceId, setActiveDeviceId] = useState<string | null>(null);
+  // Exposed so consumers (e.g. the default route redirect) can wait for the
+  // async load before deciding what to render.
+  const [hydrated, setHydrated] = useState(false);
 
-  const [activeDeviceId, setActiveDeviceId] = useState<string | null>(
-    () => localStorage.getItem(ACTIVE_KEY)
-  );
+  // Guards persistence so we don't overwrite stored data with the initial
+  // empty state before the async load from Preferences has finished.
+  const hydratedRef = useRef(false);
+
+  // Load persisted state on mount, migrating any legacy localStorage data
+  // written by older (pre-Preferences) versions of the app.
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      let devicesRaw = (await Preferences.get({ key: DEVICES_KEY })).value;
+      let activeRaw = (await Preferences.get({ key: ACTIVE_KEY })).value;
+
+      // One-time migration: WebView localStorage could be evicted by the OS,
+      // so move anything left there into durable native storage.
+      try {
+        const legacyDevices = localStorage.getItem(DEVICES_KEY);
+        const legacyActive = localStorage.getItem(ACTIVE_KEY);
+        if (devicesRaw == null && legacyDevices != null) {
+          devicesRaw = legacyDevices;
+          await Preferences.set({ key: DEVICES_KEY, value: legacyDevices });
+        }
+        if (activeRaw == null && legacyActive != null) {
+          activeRaw = legacyActive;
+          await Preferences.set({ key: ACTIVE_KEY, value: legacyActive });
+        }
+        localStorage.removeItem(DEVICES_KEY);
+        localStorage.removeItem(ACTIVE_KEY);
+      } catch {
+        // localStorage may be unavailable; ignore.
+      }
+
+      if (cancelled) return;
+
+      try {
+        setSavedDevices(devicesRaw ? JSON.parse(devicesRaw) : []);
+      } catch {
+        setSavedDevices([]);
+      }
+      setActiveDeviceId(activeRaw ?? null);
+      hydratedRef.current = true;
+      setHydrated(true);
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem(DEVICES_KEY, JSON.stringify(savedDevices));
+    if (!hydratedRef.current) return;
+    Preferences.set({ key: DEVICES_KEY, value: JSON.stringify(savedDevices) });
   }, [savedDevices]);
 
   useEffect(() => {
-    if (activeDeviceId) localStorage.setItem(ACTIVE_KEY, activeDeviceId);
-    else localStorage.removeItem(ACTIVE_KEY);
+    if (!hydratedRef.current) return;
+    if (activeDeviceId) Preferences.set({ key: ACTIVE_KEY, value: activeDeviceId });
+    else Preferences.remove({ key: ACTIVE_KEY });
   }, [activeDeviceId]);
 
   const activeDevice = savedDevices.find((d) => d.id === activeDeviceId) ?? null;
@@ -91,7 +140,7 @@ export const TvInfoProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   return (
     <TvInfoContext.Provider
-      value={{ tvInfo, activeDevice, savedDevices, setActiveDevice, saveDevice, removeDevice }}
+      value={{ tvInfo, activeDevice, savedDevices, hydrated, setActiveDevice, saveDevice, removeDevice }}
     >
       {children}
     </TvInfoContext.Provider>
