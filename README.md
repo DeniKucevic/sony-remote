@@ -74,6 +74,8 @@ Then open in Android Studio or Xcode and run on a connected device. The Ionic ex
 
 ## Version History
 
+* 1.1.1
+    * Persist TV pairing credentials in native storage so they survive app restarts (previously stored in WebView localStorage, which the OS could evict)
 * 1.1.0
     * Upgraded to Capacitor 8
     * Replaced subnet scanning with mDNS/Bonjour discovery
