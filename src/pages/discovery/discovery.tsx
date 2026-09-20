@@ -189,7 +189,7 @@ export const Discovery: React.FC = () => {
 
       <IonFooter>
         <IonToolbar>
-          <div style={{ padding: "0.5rem 1rem 0.75rem" }}>
+          <div style={{ padding: "0.5rem 1rem calc(var(--ion-safe-area-bottom, 0px) + 0.75rem)" }}>
             {scanning ? (
               <IonButton expand="block" color="danger" onClick={handleStop}>
                 <IonIcon slot="start" icon={stopCircleOutline} />

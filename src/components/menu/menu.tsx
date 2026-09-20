@@ -51,7 +51,10 @@ export const Menu = () => {
           </IonAccordion>
         </IonAccordionGroup>
       </IonContent>
-      <IonFooter className="ion-padding">
+      <IonFooter
+        className="ion-padding"
+        style={{ paddingBottom: 'calc(var(--ion-safe-area-bottom, 0px) + 16px)' }}
+      >
         <IonRouterLink href="https://github.com/DeniKucevic/sony-remote">
           <IonItem button>
             <IonIcon slot="start" icon={logoGithub} />

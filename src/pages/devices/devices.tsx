@@ -96,7 +96,12 @@ export const Devices: React.FC = () => {
           </IonList>
         )}
 
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFab
+          vertical="bottom"
+          horizontal="end"
+          slot="fixed"
+          style={{ marginBottom: 'var(--ion-safe-area-bottom, 0px)' }}
+        >
           <IonFabButton onClick={() => history.push('/discovery')}>
             <IonIcon icon={addOutline} />
           </IonFabButton>
