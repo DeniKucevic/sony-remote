@@ -17,10 +17,20 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { globeOutline, logoGithub, logoLinkedin, mailOutline } from "ionicons/icons";
+import { App as CapacitorApp } from "@capacitor/app";
+import { useEffect, useState } from "react";
 
 import { remote } from "../../assets";
 
 export const About = () => {
+  const [version, setVersion] = useState<string>("");
+
+  useEffect(() => {
+    CapacitorApp.getInfo()
+      .then((info) => setVersion(`Version ${info.version} (${info.build})`))
+      .catch(() => setVersion("")); // not available on web
+  }, []);
+
   return (
     <IonPage id="main">
       <IonHeader>
@@ -85,6 +95,19 @@ export const About = () => {
             </div>
           </IonCardContent>
         </IonCard>
+        {version && (
+          <IonNote
+            style={{
+              display: "block",
+              textAlign: "center",
+              padding: "0.5rem 1rem 1rem",
+              opacity: 0.5,
+              fontSize: "0.8rem",
+            }}
+          >
+            {version}
+          </IonNote>
+        )}
       </IonContent>
     </IonPage>
   );

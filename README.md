@@ -74,6 +74,9 @@ Then open in Android Studio or Xcode and run on a connected device. The Ionic ex
 
 ## Version History
 
+* 1.1.2
+    * Respect the bottom safe-area inset so the system navigation bar no longer covers the side menu, add-device button, or scan button
+    * Show the app version on the About page
 * 1.1.1
     * Persist TV pairing credentials in native storage so they survive app restarts (previously stored in WebView localStorage, which the OS could evict)
 * 1.1.0
